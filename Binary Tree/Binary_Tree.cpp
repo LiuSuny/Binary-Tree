@@ -42,7 +42,7 @@ public:
 
 	~Tree()
 	{
-		
+        clear();
 		cout << "TDestructor\t" << this << endl;
 	}
 
@@ -97,7 +97,7 @@ public:
         {
             return Root->Data;
         }
-        return minValueRec(Root->pRight);
+        return maxValueRec(Root->pRight);
     }
 
 
@@ -216,14 +216,17 @@ void main()
 	cout << endl;
 
     std::cout << "Min Value: " << tree.minValue() << std::endl;
-    std::cout << "Max Value: " << tree.maxValue() << std::endl;
+    std::cout << "Max Value: " <<  tree.maxValue() << std::endl;
     std::cout << "Sum of Values: " << tree.sum() << std::endl;
     std::cout << "Count of Nodes: " << tree.count() << std::endl;
     std::cout << "Depth of Tree: " << tree.depth() << std::endl;
     std::cout << "After clearing Tree"<<"\n";
-    tree.clear();
-    std::cout <<endl;
-   /* std::cout << "\nAfter erasing ";
-    tree.erase(n);
-    std::cout << "\n";*/
+    //tree.clear();
+    //std::cout <<endl;
+    std::cout << "\nAfter erasing ";
+    int value;
+    cout << "Input element to erase: "; cin >> value;
+    tree.erase(value);
+    tree.print(tree.getRoot());
+    std::cout << "\n";
 }
