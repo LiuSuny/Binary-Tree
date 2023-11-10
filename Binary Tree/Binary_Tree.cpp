@@ -1,5 +1,6 @@
 ﻿
 #include <chrono>
+#include <ctime>
 #include <iostream>
 #include <queue>
 using namespace std::literals::chrono_literals;
@@ -106,35 +107,75 @@ public:
 		Root = nullptr;
 	}
 
-	// Метод для балансировки дерева из отсортированного массива
-   void balance()
+	// Method for balancing a tree from a sorted array
+   void balanceTree()
 	{
-		vector<int> sorted_values;
-		inOrderTraversal(Root, sorted_values);
+		vector<int> _values_sorted;
+		MoveThroughArray(Root, _values_sorted);
 
-	   Root = balance_from_sorted_array(sorted_values, 0, sorted_values.size() - 1);
+	   Root = _Balance_sorted_Tree_array(_values_sorted, 0, _values_sorted.size() - 1);
 	   
 	}
 
-	// Рекурсивный метод для обхода дерева в порядке in-order и заполнения массива
-	void inOrderTraversal(Element* Root, vector<int>& result)
+	// Recursive method to move back and forth the tree in order to fill our array
+	void MoveThroughArray(Element* Root, vector<int>& result)
 	{
 		if (Root == nullptr) 
 		{
 			return;
 		}
-		inOrderTraversal(Root->pLeft, result);
+		MoveThroughArray(Root->pLeft, result);
 		result.push_back(Root->Data);
-		inOrderTraversal(Root->pRight, result);
+		MoveThroughArray(Root->pRight, result);
 	}
+
+	//Method that check how long our tree are executed using ctime library (CLOCK_PER_SEC  - result in millisecond) clock_t and clock() function 
 	void measurePerformance() 
 	{
-		// Measuring insert performance
-		auto start = std::chrono::high_resolution_clock::now();
-		for (int i = 0; i < 10000; i++)   insert(i);
-		auto end = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double> duration = end - start;
-		std::cout << "Insertion Time: " << duration.count() << " seconds" << std::endl;
+		int n;
+		std::cout << "Enter value not zero : "; cin >> n;
+		Tree tree;
+		clock_t start = clock();
+		for (int i = 0; i < n; i++)
+		{
+			tree.insert(rand() % 100);
+		}
+
+		clock_t end = clock();
+		
+		std::cout << "Binary Tree Completed for " << double(end - start) / CLOCKS_PER_SEC << " second. \n";
+		//tree.print();
+		//cout << endl;
+		start = clock();
+		std::cout << "Min Value: " << tree.minValue() << "\t";
+		end = clock();
+		std::cout << "Min Completed for " << double(end - start) / CLOCKS_PER_SEC << " second. \n";
+		///////////////////////////////////////////////////////////////////////////////////
+		start = clock();
+		std::cout << "Max Value: " << tree.maxValue() << "\t";
+		end = clock();
+		std::cout << "Max Completed for " << double(end - start) / CLOCKS_PER_SEC << " second. \n";
+		///////////////////////////////////////////////////////////////////////////////////
+		start = clock();
+		std::cout << "Sum of Values: " << tree.sum() << "\t";
+		end = clock();
+		std::cout << "Sum Completed for " << double(end - start) / CLOCKS_PER_SEC << " second. \n";
+		///////////////////////////////////////////////////////////////////////////////////
+		start = clock();
+		std::cout << "Count of Tree: " << tree.count() << "\t";
+		end = clock();
+		std::cout << "Count Completed for " << double(end - start) / CLOCKS_PER_SEC << " second. \n";
+		///////////////////////////////////////////////////////////////////////////////////
+		start = clock();
+		std::cout << "Average of Tree: " << tree.avg() << "\t";
+		end = clock();
+		std::cout << "Average Completed for " << double(end - start) / CLOCKS_PER_SEC << " second. \n";
+		///////////////////////////////////////////////////////////////////////////////////
+		start = clock();
+		std::cout << "Depth of Tree: " << tree.depth_print() << "\t";
+		end = clock();
+		std::cout << "depth tree Completed for " << double(end - start) / CLOCKS_PER_SEC << " second. \n";
+
 	}
 
 	private:
@@ -301,31 +342,30 @@ public:
 			if (Root == nullptr) {
 				return 0;
 			}
+			//else return
+			//    //return pleft root if root on the pleft is greater than depth root on pRight + 1, then we added  count from our depth pleft (:) however if it is false then we obtain the result from the right side 
+			//    depthRec(Root->pLeft) + 1 > 
+			//    depthRec(Root->pRight) + 1 ? 
+			//    depthRec(Root->pLeft) + 1 :
+			//    depthRec(Root->pRight) + 1;
 
-		  /*    int leftDepth = depthRec(Root->pLeft);
-			  int rightDepth = depthRec(Root->pRight);
+			  int leftDepth = depthRec(Root->pLeft) +1;
+			  int rightDepth = depthRec(Root->pRight)+1;
 
-			  return 1 + std::max(leftDepth, rightDepth);*/
+			  return leftDepth > rightDepth ? leftDepth : rightDepth;
 
-			else return
-			    //return pleft root if root on the pleft is greater than depth root on pRight + 1, then we added  count from our depth pleft (:) however if it is false then we obtain the result from the right side 
-			    depthRec(Root->pLeft) + 1 > 
-			    depthRec(Root->pRight) + 1 ? 
-			    depthRec(Root->pLeft) + 1 :
-			    depthRec(Root->pRight) + 1;
 
 		}
 	   
 		//Balance method
-		Element * balance_from_sorted_array(std::vector<int>& sorted, int start, int end) 
+		Element * _Balance_sorted_Tree_array(vector<int>& sorted, int start, int end) 
 		{
 			if (start > end)  return nullptr;
-			
-			int mid = (start + end) / 2;
-			Element* Root = new Element(sorted[mid]);
+			int middle = (start + end) / 2;
+			Element* Root = new Element(sorted[middle]);
 
-			Root->pLeft = balance_from_sorted_array(sorted, start, mid - 1);
-			Root->pRight = balance_from_sorted_array(sorted, mid + 1, end);
+			Root->pLeft = _Balance_sorted_Tree_array(sorted, start, middle - 1);
+			Root->pRight = _Balance_sorted_Tree_array(sorted, middle + 1, end);
 
 			return Root;
 		}
@@ -358,6 +398,55 @@ public:
 	{
 		insert(Data, Root);
 	}
+
+	void measureTimePerform()
+	{
+	 
+		int n;
+		cout << "Enter unique tree value : "; cin >> n;
+		UniqueTree u_tree;
+		//u_tree.measurePerformance();
+	clock_t begin = clock();
+	for (int i = 0; i < n; i++)
+	{
+		u_tree.insert(rand() % 100);
+	}
+	clock_t finish = clock();
+	std::cout << "Unique Binary Tree Completed for " << double(finish - begin) / CLOCKS_PER_SEC << " second. \n";
+	//tree.print();
+	//cout << endl;
+	begin = clock();
+	std::cout << "Min Value: " << u_tree.minValue() << "\t";
+	finish= clock();
+	std::cout << "Min Completed for " << double(finish - begin) / CLOCKS_PER_SEC << " second. \n";
+	///////////////////////////////////////////////////////////////////////////////////
+	begin = clock();
+	std::cout << "Max Value: " << u_tree.maxValue() << "\t";
+	finish = clock();
+	std::cout << "Max Completed for " << double(finish - begin) / CLOCKS_PER_SEC << " second. \n";
+	///////////////////////////////////////////////////////////////////////////////////
+	begin = clock();
+	std::cout << "Sum of Values: " << u_tree.sum() << "\t";
+	finish = clock();
+	std::cout << "Sum Completed for " << double(finish - begin) / CLOCKS_PER_SEC << " second. \n";
+	///////////////////////////////////////////////////////////////////////////////////
+	begin = clock();
+	std::cout << "Count of Tree: " << u_tree.count() << "\t";
+	finish= clock();
+	std::cout << "Count Completed for " << double(finish - begin) / CLOCKS_PER_SEC << " second. \n";
+	///////////////////////////////////////////////////////////////////////////////////
+	begin = clock();
+	std::cout << "Average of Tree: " << u_tree.avg() << "\t";
+	finish= clock();
+	std::cout << "Average Completed for " << double(finish - begin) / CLOCKS_PER_SEC << " second. \n";
+	///////////////////////////////////////////////////////////////////////////////////
+	begin = clock();
+	std::cout << "Depth of Tree: " << u_tree.depth_print() << "\t";
+	finish = clock();
+	std::cout << "depth tree Completed for " << double(finish - begin) / CLOCKS_PER_SEC << " second. \n";
+	///////////////////////////////////////////////////////////////////////////////////////
+
+	}
 };
 
 #define BASE_CHECK
@@ -370,25 +459,13 @@ int main()
 
 
 #ifdef BASE_CHECK 
-	int n;
-	cout << "Enter the size of Tree : "; cin >> n;
-	Tree tree;
-
-	for (int i = 0; i < n; i++)
-	{
-		tree.insert(rand() % 100);
-	}
-	tree.print();
-	cout << endl;
-   
-	std::cout << "Min Value: " << tree.minValue() << std::endl;
-	std::cout << "Max Value: " << tree.maxValue() << std::endl;
-	std::cout << "Sum of Values: " << tree.sum() << std::endl;
-	std::cout << "Count of Tree: " << tree.count() << std::endl;
-	std::cout << "Average of Tree: " << tree.avg() << std::endl;
-	std::cout << "Depth of Tree: " << tree.depth_print() << std::endl;
 	
-	//std::cout << "\nAfter balance of Tree: \n";  tree.balance();
+	Tree trees;
+	trees.measurePerformance();
+	
+	
+	std::cout << "\nAfter balance of Tree: \n";
+	/*std::cout <<*/ trees.balanceTree();
 	//tree.print();
   //  std::cout << "\n";
    //tree.clear();
@@ -399,24 +476,13 @@ int main()
 	//tree.print();
 	////tree.measurePerformance();
 	//std::cout << "\n";
+	cout << "===================\n";
 
+	UniqueTree uniq_tree;
+	uniq_tree.measureTimePerform();
 
-	UniqueTree u_tree;
-	for (int i = 0; i < n; i++)
-	{
-		u_tree.insert(rand() % 100);
-	}
-	tree.print();
-	cout << endl;
-	std::cout << "Min Value: " << u_tree.minValue() << std::endl;
-	std::cout << "Max Value: " << u_tree.maxValue() << std::endl;
-	std::cout << "Sum of Values: " << u_tree.sum() << std::endl;
-	std::cout << "Count of Tree: " << u_tree.count() << std::endl;
-	std::cout << "Average of Tree: " << u_tree.avg() << std::endl;
-	std::cout << "Depth of Tree: " << u_tree.depth_print() << std::endl;
-	
-	
-	//std::cout << "balance of Tree: \n"; u_tree.balance();
+	std::cout << "\nAfter balance of Tree: \n";
+	/*std::cout <<*/ trees.balanceTree();
 	//tree.print();
 	//  std::cout << "\n";
 	//tree.clear();
